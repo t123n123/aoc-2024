@@ -1,4 +1,5 @@
-*.input
+**/*input
+**/*puzzle.md
 .aoc_tiles/*
 session.cookie
 !.aoc_tiles/tiles/

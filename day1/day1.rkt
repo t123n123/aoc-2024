@@ -1,7 +1,7 @@
 #lang racket
 (require racket/set)
 
-(define file (open-input-file "./1day.input"))
+(define file (open-input-file "input"))
 
 (define n 1000)
 (define ab
