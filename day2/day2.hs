@@ -1,6 +1,3 @@
-#!/usr/bin/env runhaskell
-
-import Data.Fixed (E0)
 import Data.List
 import System.IO
 
@@ -14,6 +11,6 @@ partTwo :: [[Int]] -> Int
 partTwo xs = length . filter (\ls -> not . null . partOne $ zipWith (\x y -> (x ++ (drop 1 y))) (inits ls) (tails ls)) $ xs
 
 main = do
-  contents <- readFile "input"
-  print . length . partOne . map (map read . words) . lines $ contents
-  print . partTwo . map (map read . words) . lines $ contents
+  input <- fmap ((map $ (map read) . words) . lines) $ readFile "input"
+  print . length . partOne $ input
+  print . partTwo $ input
