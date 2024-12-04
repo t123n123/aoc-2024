@@ -1,3 +1,5 @@
+import Data.List (tails, transpose)
+
 main = do
   input <- lines <$> readFile "input"
   print $ partOne input
@@ -8,33 +10,29 @@ check "SAMX" = 1
 check _ = 0
 
 leftright :: [String] -> Int
-leftright xs = check start
- where
-  start = (take 4) $ head xs
+leftright (('X' : 'M' : 'A' : 'S' : _) : _) = 1
+leftright (('S' : 'A' : 'M' : 'X' : _) : _) = 1
+leftright _ = 0
 
 updown :: [String] -> Int
-updown xs = check start
- where
-  start = map head (take 4 xs)
+updown (('X' : _) : ('M' : _) : ('A' : _) : ('S' : _) : _) = 1
+updown (('S' : _) : ('A' : _) : ('M' : _) : ('X' : _) : _) = 1
+updown _ = 0
 
 diagonal :: [String] -> Int
-diagonal xs = check start
- where
-  start = map (\i -> head $ (drop i) $ head $ (drop i) $ xs) [0, 1, 2, 3]
+diagonal (('X' : _) : (_ : 'M' : _) : (_ : _ : 'A' : _) : (_ : _ : _ : 'S' : _) : _) = 1
+diagonal (('S' : _) : (_ : 'A' : _) : (_ : _ : 'M' : _) : (_ : _ : _ : 'X' : _) : _) = 1
+diagonal _ = 0
 
 weird_diagonal :: [String] -> Int
-weird_diagonal xs = check start
- where
-  start = map (\i -> last $ (take (4 - i)) $ head $ (drop i) $ xs) [0, 1, 2, 3]
+weird_diagonal ((_ : _ : _ : 'X' : _) : (_ : _ : 'M' : _) : (_ : 'A' : _) : ('S' : _) : _) = 1
+weird_diagonal ((_ : _ : _ : 'S' : _) : (_ : _ : 'A' : _) : (_ : 'M' : _) : ('X' : _) : _) = 1
+weird_diagonal _ = 0
 
-combine xs
-  | length xs > 3 && length (head xs) > 3 = leftright xs + updown xs + diagonal xs + weird_diagonal xs
-  | length xs > 3 = updown xs
-  | length (head xs) > 3 = leftright xs
-  | otherwise = 0
+combine xs = leftright xs + updown xs + diagonal xs + weird_diagonal xs
 
 partOne :: [String] -> Int
-partOne xs = sum [combine (map (drop y) (drop x xs)) | x <- [0 .. length xs - 1], y <- [0 .. length (head xs) - 1]]
+partOne xs = sum [sum [combine . transpose $ y | y <- tails . transpose $ x] | x <- tails xs]
 
 check' :: [String] -> Int
 check' [['M', _, 'M'], [_, 'A', _], ['S', _, 'S']] = 1
