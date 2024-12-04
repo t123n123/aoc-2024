@@ -5,10 +5,6 @@ main = do
   print $ partOne input
   print $ partTwo input
 
-check "XMAS" = 1
-check "SAMX" = 1
-check _ = 0
-
 leftright :: [String] -> Int
 leftright (('X' : 'M' : 'A' : 'S' : _) : _) = 1
 leftright (('S' : 'A' : 'M' : 'X' : _) : _) = 1
@@ -34,11 +30,11 @@ combine xs = leftright xs + updown xs + diagonal xs + weird_diagonal xs
 partOne :: [String] -> Int
 partOne xs = sum [sum [combine . transpose $ y | y <- tails . transpose $ x] | x <- tails xs]
 
-check' :: [String] -> Int
-check' [['M', _, 'M'], [_, 'A', _], ['S', _, 'S']] = 1
-check' [['M', _, 'S'], [_, 'A', _], ['M', _, 'S']] = 1
-check' [['S', _, 'S'], [_, 'A', _], ['M', _, 'M']] = 1
-check' [['S', _, 'M'], [_, 'A', _], ['S', _, 'M']] = 1
-check' _ = 0
+check :: [String] -> Int
+check (('M' : _ : 'M' : _) : (_ : 'A' : _) : ('S' : _ : 'S' : _) : _) = 1
+check (('M' : _ : 'S' : _) : (_ : 'A' : _) : ('M' : _ : 'S' : _) : _) = 1
+check (('S' : _ : 'S' : _) : (_ : 'A' : _) : ('M' : _ : 'M' : _) : _) = 1
+check (('S' : _ : 'M' : _) : (_ : 'A' : _) : ('S' : _ : 'M' : _) : _) = 1
+check _ = 0
 
-partTwo xs = sum [check' . (map (take 3)) . (take 3) . (map (drop y)) . (drop x) $ xs | x <- [0 .. length xs - 3], y <- [0 .. length (head xs) - 3]]
+partTwo xs = sum [sum [check . transpose $ y | y <- tails . transpose $ x] | x <- tails xs]
