@@ -24,5 +24,4 @@ fun main() {
         }
     }.flatten().sum())
 
-
 }
