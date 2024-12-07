@@ -3,14 +3,19 @@ import Data.Map (Map, empty, insert, lookup, member)
 
 data Direction = N | E | S | W deriving (Show, Ord, Eq)
 
+directionOffset N = (0, -1)
 directionOffset W = (-1, 0)
 directionOffset S = (0, 1)
 directionOffset E = (1, 0)
-directionOffset N = (0, -1)
 
-guardLocation (x, y, d) = (x, y)
+guardLocation state = (x, y)
+ where
+  (x, y, d) = (guardState state)
 
-moveGuard (x, y, d) = (x + (fst $ directionOffset d), y + (snd $ directionOffset d), d)
+moveGuard (x, y, N) = (x, y - 1, N)
+moveGuard (x, y, W) = (x - 1, y, W)
+moveGuard (x, y, S) = (x, y + 1, S)
+moveGuard (x, y, E) = (x + 1, y, E)
 
 data State = State
   { guardState :: (Int, Int, Direction)
@@ -22,11 +27,9 @@ data State = State
 
 main = do
   input <- lines <$> readFile "input"
-  test <- lines <$> readFile "input_test"
-  problem <- pure input
-  by <- length <$> pure problem
-  bx <- length . head <$> pure problem
-  initialState <- parseInput (State{guardState = (0, 0, N), obstacleEdgesMap = empty, visitedLocations = [], visitedGuardStatesMap = empty}) <$> pure problem
+  by <- length <$> pure input
+  bx <- length . head <$> pure input
+  initialState <- parseInput (State{guardState = (0, 0, N), obstacleEdgesMap = empty, visitedLocations = [], visitedGuardStatesMap = empty}) <$> pure input
   test_state <- simulate bx by <$> pure initialState
   locations <- (map head . group . sort . visitedLocations) <$> pure test_state
   print (length $ group $ sort $ visitedLocations test_state)
@@ -51,24 +54,24 @@ parseInput state input = parseInput' 0 0 state input
 simulateStep :: State -> State
 simulateStep state = case redirect of
   Just d' -> state{guardState = (x, y, d')}
-  Nothing -> state{guardState = moveGuard $ guardState state, visitedLocations = (guardLocation $ guardState state) : (visitedLocations state), visitedGuardStatesMap = insert (guardState state) True (visitedGuardStatesMap state)}
+  Nothing -> state{guardState = moveGuard $ guardState state, visitedLocations = (guardLocation state) : (visitedLocations state), visitedGuardStatesMap = insert (guardState state) True (visitedGuardStatesMap state)}
  where
   redirect = Data.Map.lookup (guardState state) (obstacleEdgesMap state)
   (x, y, d) = (guardState state)
 
 simulate :: Int -> Int -> State -> State
 simulate bx by state
-  | (fst $ guardLocation $ guardState state) < 0 = state
-  | (snd $ guardLocation $ guardState state) < 0 = state
-  | (fst $ guardLocation $ guardState state) >= bx = state
-  | (snd $ guardLocation $ guardState state) >= by = state
+  | (fst $ guardLocation state) < 0 = state
+  | (snd $ guardLocation state) < 0 = state
+  | (fst $ guardLocation state) >= bx = state
+  | (snd $ guardLocation state) >= by = state
   | otherwise = simulate bx by (simulateStep state)
 
 simulateEnd :: Int -> Int -> State -> Bool
 simulateEnd bx by state
   | member (guardState state) (visitedGuardStatesMap state) = True
-  | (fst $ guardLocation $ guardState state) < 0 = False
-  | (snd $ guardLocation $ guardState state) < 0 = False
-  | (fst $ guardLocation $ guardState state) >= bx = False
-  | (snd $ guardLocation $ guardState state) >= by = False
+  | (fst $ guardLocation state) < 0 = False
+  | (snd $ guardLocation state) < 0 = False
+  | (fst $ guardLocation state) >= bx = False
+  | (snd $ guardLocation state) >= by = False
   | otherwise = simulateEnd bx by (simulateStep state)
