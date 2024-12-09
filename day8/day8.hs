@@ -34,12 +34,12 @@ outOfBounds (bx, by) (x, y)
 
 parse :: [String] -> Map Char [P]
 parse input = parse' 0 0 input
- where
-  parse' x y [] = empty
-  parse' x y ([] : ls) = parse' 0 (y + 1) ls
-  parse' x y ((c : xs) : ls)
-    | c == '.' = rest
-    | member c rest = insertWith (++) c [(x, y)] rest
-    | otherwise = insert c [(x, y)] rest
-   where
-    rest = parse' (x + 1) y (xs : ls)
+  where
+    parse' x y [] = empty
+    parse' x y ([] : ls) = parse' 0 (y + 1) ls
+    parse' x y ((c : xs) : ls)
+      | c == '.' = rest
+      | member c rest = insertWith (++) c [(x, y)] rest
+      | otherwise = insert c [(x, y)] rest
+      where
+        rest = parse' (x + 1) y (xs : ls)
