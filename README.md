@@ -1,7 +1,7 @@
 # aoc-2024
 <!-- AOC TILES BEGIN -->
 <h1 align="center">
-  2024 - 20 ⭐ - Haskell
+  2024 - 22 ⭐ - Haskell
 </h1>
 <a href="day1/day1.hs">
   <img src=".aoc_tiles/tiles/2024/01.png" width="161px">
@@ -32,5 +32,8 @@
 </a>
 <a href="day10/day10.hs">
   <img src=".aoc_tiles/tiles/2024/10.png" width="161px">
+</a>
+<a href="day11/day11.hs">
+  <img src=".aoc_tiles/tiles/2024/11.png" width="161px">
 </a>
 <!-- AOC TILES END -->
